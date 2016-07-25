@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello():
-    return render_template('index.html', title="Welcome to rooms")
+    return render_template('index.html', title="RoomsTube")
 
 @app.errorhandler(500)
 def server_error(e):
