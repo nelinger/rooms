@@ -9,3 +9,5 @@ https://cloud.google.com/appengine/docs/python/getting-started/python-standard-e
 How to run the local server:
 From the rooms directory, run: dev_appserver.py .
 
+Deploy to production:
+appcfg.py -A roomstube -V v1 update ./
