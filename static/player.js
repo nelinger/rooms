@@ -1,3 +1,7 @@
+function start() {
+  enableButton();
+}
+
 function enableButton() {
   $('button').removeAttr('disabled');
 }

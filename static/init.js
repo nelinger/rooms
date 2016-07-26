@@ -1,13 +1,15 @@
 // The client ID is obtained from the Google Cloud Console.
 var OAUTH2_CLIENT_ID = '231044460554-vho75s2q7s5gtna1a9f7jpvlc6m315u0.apps.googleusercontent.com';
 var OAUTH2_SCOPES = [
-  'https://www.googleapis.com/auth/youtube'
+  'https://www.googleapis.com/auth/youtube',
+  'https://www.googleapis.com/auth/plus.login'
 ];
 
 $(function() {
   initGoogleApi().then(function() {
-    Promise.all([doAuth(), loadYoutubeClient(), loadYoutubePlayer()]).then(function() {
-      enableButton();
+    Promise.all([doAuth(), loadYoutubeClient(), loadPlusClient(), loadYoutubePlayer()]).then(
+      function() {        
+        start();
     });
   });
 });
@@ -46,6 +48,14 @@ function doAuth() {
       window.setTimeout(checkAuth, 1);
     });    
   });
+}
+
+function loadPlusClient() {
+  return new Promise(function(resolve) {
+    gapi.client.load('plus', 'v1', function() {
+      resolve();
+    });
+  });  
 }
 
 function loadYoutubeClient() {
