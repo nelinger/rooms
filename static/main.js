@@ -8,53 +8,63 @@ var OAUTH2_SCOPES = [
 ];
 
 $(function() {
-  init();
+  initGoogleApi().then(function() {
+    Promise.all([doAuth(), loadYoutubeClient(), loadYoutubePlayer()]).then(function() {
+      enableButton();
+    });
+  });
 });
 
-function init() {
-  $.getScript('https://apis.google.com/js/client.js?onload=googleApiClientReady');
-}
-
-// Upon loading, the Google APIs JS client automatically invokes this callback.
-googleApiClientReady = function() {
-  gapi.auth.init(function() {
-    window.setTimeout(checkAuth, 1);
+function initGoogleApi() {
+  return new Promise(function(resolve) {
+    window.googleApiClientReady = function() {
+      resolve();
+    };
+    $.getScript('https://apis.google.com/js/client.js?onload=googleApiClientReady');    
   });
 }
 
-// Attempt the immediate OAuth 2.0 client flow as soon as the page loads.
-// If the currently logged-in Google Account has previously authorized
-// the client specified as the OAUTH2_CLIENT_ID, then the authorization
-// succeeds with no user intervention. Otherwise, it fails and the
-// user interface that prompts for authorization needs to display.
-function checkAuth() {
-  gapi.auth.authorize({
-    client_id: OAUTH2_CLIENT_ID,
-    scope: OAUTH2_SCOPES,
-    immediate: true
-  }, handleAuthResult);
+function doAuth() {
+  return new Promise(function(resolve) {
+    var handleAuthResult = function(authResult) {
+      if (authResult && !authResult.error) {
+        resolve();
+      } else {
+        // Consent
+        gapi.auth.authorize({
+          client_id: OAUTH2_CLIENT_ID,
+          scope: OAUTH2_SCOPES,
+          immediate: false
+          }, handleAuthResult);
+      }
+    };
+    var checkAuth = function() {
+      gapi.auth.authorize({
+        client_id: OAUTH2_CLIENT_ID,
+        scope: OAUTH2_SCOPES,
+        immediate: true
+      }, handleAuthResult);      
+    };
+    gapi.auth.init(function() {
+      window.setTimeout(checkAuth, 1);
+    });    
+  });
 }
 
-// Handle the result of a gapi.auth.authorize() call.
-function handleAuthResult(authResult) {
-  if (authResult && !authResult.error) {
-    loadAPIClientInterfaces();
-  } else {
-    // Consent
-    gapi.auth.authorize({
-      client_id: OAUTH2_CLIENT_ID,
-      scope: OAUTH2_SCOPES,
-      immediate: false
-      }, handleAuthResult);
-  }
+function loadYoutubeClient() {
+  return new Promise(function(resolve) {
+    gapi.client.load('youtube', 'v3', function() {
+      resolve();
+    });
+  });
 }
 
-// Load the client interfaces for the YouTube Analytics and Data APIs, which
-// are required to use the Google APIs JS client. More info is available at
-// https://developers.google.com/api-client-library/javascript/dev/dev_jscript#loading-the-client-library-and-the-api
-function loadAPIClientInterfaces() {
-  gapi.client.load('youtube', 'v3', function() {
-    enableButton();
+function loadYoutubePlayer() {
+  return new Promise(function(resolve) {
+    window.onYouTubeIframeAPIReady = function() {
+      resolve();
+    };
+    $.getScript('https://www.youtube.com/iframe_api');
   });
 }
 
@@ -88,8 +98,9 @@ function getPosterFor(item) {
     'width': item.snippet.thumbnails.default.width,
     'height': item.snippet.thumbnails.default.height,
     'background-image': 'url(' + item.snippet.thumbnails.default.url + ')'
+  }).click(function() {
+    play(item);
   });
-  // item.snippet.thumbnails.high.url  
 }
 
 function handleSearchResponse(result) {
@@ -98,4 +109,25 @@ function handleSearchResponse(result) {
   result.items.forEach(function(item) {
     resultsContainer.append(getPosterFor(item));
   });
+}
+
+function play(item) {
+  player = new YT.Player('player', {
+    height: '390',
+    width: '640',
+    videoId: item.id.videoId,
+    events: {
+      'onReady': onPlayerReady,
+      'onStateChange': onPlayerStateChange
+    }
+  });  
+}
+
+function onPlayerReady() {
+  player.playVideo();
+}
+
+function onPlayerStateChange(event) {
+  // event.data is oneof YT.PlayerState enum.
+  alert('player state changed: ' + event.data);
 }
