@@ -7,6 +7,7 @@ var OAUTH2_SCOPES = [
 
 $(function() {
   initGoogleApi().then(function() {
+    authorizeRealtime();
     Promise.all([doAuth(), loadYoutubeClient(), loadPlusClient(), loadYoutubePlayer()]).then(
       function() {        
         start();

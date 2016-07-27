@@ -1,10 +1,10 @@
 function start() {
-  enableButton();
+  enableSearchButton();
   greetUser();
 }
 
-function enableButton() {
-  $('button').removeAttr('disabled');
+function enableSearchButton() {
+  $('button.search').removeAttr('disabled');
 }
 
 function getQueryValue() {
@@ -81,10 +81,6 @@ function showUserDetails(user) {
   $('<div/>', {
     class: 'user'
   }).text('Hello ' + user.displayName).appendTo($('.hello'));
-}
-
-function enableButton() {
-  $('button').removeAttr('disabled');
 }
 
 function createRoom() { 
