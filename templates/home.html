@@ -5,14 +5,13 @@
     <link rel="stylesheet" type="text/css" href="/static/style.css">
   </head>
   <body>
-    <div class="hello"></div>
+    <div class="hello"></div>  
+    <div id="player"></div>
     <input type="text" name="query"><br>
-    <button disabled type="button" onclick="createRoom()">Create room</button>    
-    <div class="yourRooms">
-      TODO(nelinger): show rooms that the user owns/memeber of
-    </div>
-    <script src="/static/jquery-3.1.0.js"></script> 
+	  <button disabled type="button" onclick="search()">Search</button>
+	  <div class="resultsContainer"></div>
+    <script src="/static/jquery-3.1.0.js"></script>	
     <script src="/static/init.js"></script>
-    <script src="/static/rooms.js"></script>
+    <script src="/static/app.js"></script>
   </body>
 </html>
