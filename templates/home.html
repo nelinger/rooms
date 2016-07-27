@@ -5,11 +5,17 @@
     <link rel="stylesheet" type="text/css" href="/static/style.css">
   </head>
   <body>
-    <div class="hello"></div>  
-    <div id="player"></div>
-    <input type="text" name="query"><br>
-	  <button disabled type="button" onclick="search()">Search</button>
-	  <div class="resultsContainer"></div>
+    <div class="app">
+      <div class="search pane">
+        <div class="hello"></div>  
+        <input type="text" name="query"><br>
+        <button disabled type="button" onclick="search()">Search</button>
+        <div class="resultsContainer"></div>      
+      </div>
+      <div class="player pane">
+        <div id="player"></div>      
+      </div>    
+    </div>
     <script src="/static/jquery-3.1.0.js"></script>	
     <script src="/static/init.js"></script>
     <script src="/static/app.js"></script>

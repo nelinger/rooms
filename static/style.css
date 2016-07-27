@@ -2,3 +2,15 @@
 	border: 1px solid blue;
     margin: 10px;	
 }
+
+.app {
+	display: flex;
+}
+
+.search.pane {
+	flex: 2;
+}
+
+.player.pane {
+	flex: 3;
+}
