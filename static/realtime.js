@@ -26,8 +26,18 @@ function startRealtime() {
   } else {
     // Create a new document, add it to the URL
     realtimeUtils.createRealtimeFile('New QuickstartRealtime File', function(createResponse) {
-      window.history.pushState(null, null, '?id=' + createResponse.id);
-      realtimeUtils.load(createResponse.id, onFileLoaded, onFileInitialize);
+      // Set permissions for anyone to be a writer.
+      var request = gapi.client.drive.permissions.insert({
+        'fileId': createResponse.id,
+        'resource': {          
+          'type': 'anyone',
+          'role': 'writer'
+        }
+      });
+      request.execute(function(resp) { 
+        window.history.pushState(null, null, '?id=' + createResponse.id);
+        realtimeUtils.load(createResponse.id, onFileLoaded, onFileInitialize);
+      });
     });
   }
 }
@@ -54,4 +64,4 @@ function onFileLoaded(doc) {
 
 function onActivityAdded(event) {
   console.log(event.values);
-}
+}""
